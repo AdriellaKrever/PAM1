@@ -1,1 +1,1 @@
-# PAM1 ETEC
+# docs
