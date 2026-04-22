@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle Escolar</title>
+
+    <!-- CSS -->
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background-color: rgb(255, 214, 32);
+            text-align: center;
+        }
+
+        input {
+            margin: 5px;
+        }
+
+        button {
+            margin: 5px;
+        }
+
+        .aprovado {
+            color: green;
+        }
+
+        .reprovado {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Cadastro de Alunos</h1>
+
+    <form id="formAluno">
+        <input type="text" id="nome" placeholder="Nome">
+        <input type="number" id="idade" placeholder="Idade">
+        <input type="number" id="nota" placeholder="Nota (0 a 10)">
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <p id="mensagem"></p>
+
+    <h2>Lista de Alunos</h2>
+    <ul id="listaAlunos"></ul>
+
+    <h2>Estatísticas</h2>
+    <p>Total: <span id="total">0</span></p>
+    <p>Média: <span id="media">0</span></p>
+    <p>Aprovados: <span id="aprovados">0</span></p>
+    <p>Reprovados: <span id="reprovados">0</span></p>
+
+    <!-- JavaScript -->
+    <script>
+        let alunos = [];
+
+        let form = document.getElementById("formAluno");
+        let mensagem = document.getElementById("mensagem");
+        let lista = document.getElementById("listaAlunos");
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let nome = document.getElementById("nome").value;
+            let idade = document.getElementById("idade").value;
+            let nota = document.getElementById("nota").value;
+
+            if (nome === "" || idade === "" || nota === "") {
+                mensagem.innerText = "Preencha todos os campos!";
+                return;
+            }
+
+            if (idade <= 0) {
+                mensagem.innerText = "Idade inválida!";
+                return;
+            }
+
+            if (nota < 0 || nota > 10) {
+                mensagem.innerText = "Nota deve ser entre 0 e 10!";
+                return;
+            }
+
+            mensagem.innerText = "";
+
+            let aluno = {
+                nome: nome,
+                idade: Number(idade),
+                nota: Number(nota)
+            };
+
+            alunos.push(aluno);
+
+            form.reset();
+
+            atualizarLista();
+        });
+
+        function atualizarLista() {
+            lista.innerHTML = "";
+
+            for (let i = 0; i < alunos.length; i++) {
+                let aluno = alunos[i];
+
+                let li = document.createElement("li");
+
+                let status = aluno.nota >= 6 ? "Aprovado" : "Reprovado";
+
+                li.innerHTML = `
+                    ${aluno.nome} - ${aluno.idade} anos - Nota: ${aluno.nota} - 
+                    <span class="${status === 'Aprovado' ? 'aprovado' : 'reprovado'}">${status}</span>
+                    <button onclick="remover(${i})">Remover</button>
+                    <button onclick="detalhes(${i})">Detalhes</button>
+                `;
+
+                lista.appendChild(li);
+            }
+
+            atualizarEstatisticas();
+        }
+
+        function remover(index) {
+            alunos.splice(index, 1);
+            atualizarLista();
+        }
+
+        function detalhes(index) {
+            let aluno = alunos[index];
+            alert("Nome: " + aluno.nome + "\nIdade: " + aluno.idade + "\nNota: " + aluno.nota);
+        }
+
+        function atualizarEstatisticas() {
+            let total = alunos.length;
+            let soma = 0;
+            let aprovados = 0;
+            let reprovados = 0;
+
+            for (let i = 0; i < alunos.length; i++) {
+                soma += alunos[i].nota;
+
+                if (alunos[i].nota >= 6) {
+                    aprovados++;
+                } else {
+                    reprovados++;
+                }
+            }
+
+            let media = total > 0 ? soma / total : 0;
+
+            document.getElementById("total").innerText = total;
+            document.getElementById("media").innerText = media.toFixed(2);
+            document.getElementById("aprovados").innerText = aprovados;
+            document.getElementById("reprovados").innerText = reprovados;
+        }
+    </script>
+
+</body>
+</html>
