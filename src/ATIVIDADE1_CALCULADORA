@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Exercício Prático</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #ff0000;
+}
+
+h1 {
+    color: #333;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input {
+    margin: 5px;
+    padding: 8px;
+    width: 80%;
+}
+
+button {
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#resultado {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Calculadora Completa</h1>
+
+<div class="container">
+    <h3>Operações básicas</h3>
+    <input type="number" id="numero" placeholder="Digite um número">
+
+    <br>
+    <button onclick="calcular('dobro')">Dobro</button>
+    <button onclick="calcular('triplo')">Triplo</button>
+    <button onclick="calcular('quadruplo')">Quádruplo</button>
+    <button onclick="calcular('quintuplo')">Quíntuplo</button>
+    <button onclick="calcular('sextuplo')">Sêxtuplo</button>
+
+    <br>
+    <button onclick="calcular('quadrado')">Quadrado</button>
+    <button onclick="calcular('cubo')">Cubo</button>
+    <button onclick="calcular('pot4')">4ª Potência</button>
+    <button onclick="calcular('pot5')">5ª Potência</button>
+    <button onclick="calcular('pot6')">6ª Potência</button>
+
+    <br>
+    <button onclick="calcular('par')">Par ou Ímpar</button>
+</div>
+
+<div class="container">
+    <h3>Bhaskara</h3>
+    <input type="number" id="a" placeholder="A">
+    <input type="number" id="b" placeholder="B">
+    <input type="number" id="c" placeholder="C">
+    <br>
+    <button onclick="bhaskara()">Calcular</button>
+</div>
+
+<div class="container">
+    <h3>Média de 4 números</h3>
+    <input type="number" id="n1" placeholder="Número 1">
+    <input type="number" id="n2" placeholder="Número 2">
+    <input type="number" id="n3" placeholder="Número 3">
+    <input type="number" id="n4" placeholder="Número 4">
+    <br>
+    <button onclick="media()">Calcular Média</button>
+</div>
+
+<p id="resultado"></p>
+
+<script>
+function mostrar(res) {
+    document.getElementById("resultado").innerText = res;
+}
+
+function calcular(tipo) {
+    let n = Number(document.getElementById("numero").value);
+
+    if (isNaN(n)) {
+        mostrar("Digite um número válido!");
+        return;
+    }
+
+    switch(tipo) {
+        case 'dobro': mostrar("Dobro: " + (n * 2)); break;
+        case 'triplo': mostrar("Triplo: " + (n * 3)); break;
+        case 'quadruplo': mostrar("Quádruplo: " + (n * 4)); break;
+        case 'quintuplo': mostrar("Quíntuplo: " + (n * 5)); break;
+        case 'sextuplo': mostrar("Sêxtuplo: " + (n * 6)); break;
+
+        case 'quadrado': mostrar("Quadrado: " + (n ** 2)); break;
+        case 'cubo': mostrar("Cubo: " + (n ** 3)); break;
+        case 'pot4': mostrar("4ª potência: " + (n ** 4)); break;
+        case 'pot5': mostrar("5ª potência: " + (n ** 5)); break;
+        case 'pot6': mostrar("6ª potência: " + (n ** 6)); break;
+
+        case 'par':
+            if (n % 2 === 0) {
+                mostrar("É par");
+            } else {
+                mostrar("É ímpar");
+            }
+            break;
+    }
+}
+
+function media() {
+    let n1 = Number(document.getElementById("n1").value);
+    let n2 = Number(document.getElementById("n2").value);
+    let n3 = Number(document.getElementById("n3").value);
+    let n4 = Number(document.getElementById("n4").value);
+
+    let m = (n1 + n2 + n3 + n4) / 4;
+    mostrar("Média: " + m);
+}
+
+function bhaskara() {
+    let a = Number(document.getElementById("a").value);
+    let b = Number(document.getElementById("b").value);
+    let c = Number(document.getElementById("c").value);
+
+    let delta = b*b - 4*a*c;
+
+    if (delta < 0) {
+        mostrar("Sem raízes reais");
+        return;
+    }
+
+    let x1 = (-b + Math.sqrt(delta)) / (2*a);
+    let x2 = (-b - Math.sqrt(delta)) / (2*a);
+
+    mostrar("x1: " + x1 + " | x2: " + x2);
+}
+</script>
+
+</body>
+</html>
