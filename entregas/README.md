@@ -1,1 +1,1 @@
-pasta para entregas finais
+PASTA PARA GUARDAR AS ENTREGAS
