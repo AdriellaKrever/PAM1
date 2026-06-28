@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrinho de Compras</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 40px;
+}
+
+.produtos, .carrinho {
+    width: 300px;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.produto, .itemCarrinho {
+    border: 1px solid gray;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+button {
+    margin-top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Carrinho de Compras</h1>
+
+<label>Filtro:</label>
+<select id="filtro">
+    <option value="todos">Todos</option>
+    <option value="ate50">Até R$50</option>
+    <option value="acima50">Acima de R$50</option>
+</select>
+
+<div class="container">
+
+    <div class="produtos">
+        <h2>Produtos</h2>
+        <div id="listaProdutos"></div>
+    </div>
+
+    <div class="carrinho">
+        <h2>Carrinho</h2>
+        <div id="listaCarrinho"></div>
+
+        <h3>Total: R$ <span id="total">0</span></h3>
+    </div>
+
+</div>
+
+<script>
+// Lista de produtos
+let produtos = [
+    { nome: "Mouse", preco: 30 },
+    { nome: "Teclado", preco: 80 },
+    { nome: "Fone", preco: 50 },
+    { nome: "Monitor", preco: 500 }
+];
+
+let carrinho = [];
+
+let listaProdutos = document.querySelector("#listaProdutos");
+let listaCarrinho = document.querySelector("#listaCarrinho");
+let total = document.querySelector("#total");
+let filtro = document.querySelector("#filtro");
+
+function mostrarProdutos(lista) {
+
+    listaProdutos.innerHTML = "";
+
+    lista.forEach(function(produto) {
+
+        let div = document.createElement("div");
+        div.classList.add("produto");
+
+        div.innerHTML = `
+            <h3>${produto.nome}</h3>
+            <p>R$ ${produto.preco}</p>
+            <button>Adicionar</button>
+        `;
+
+        let botao = div.querySelector("button");
+
+        botao.addEventListener("click", function() {
+            adicionarCarrinho(produto);
+        });
+
+        listaProdutos.appendChild(div);
+    });
+}
+
+function adicionarCarrinho(produto) {
+
+    let existe = false;
+
+    carrinho.forEach(function(item) {
+        if (item.nome == produto.nome) {
+            item.quantidade++;
+            existe = true;
+        }
+    });
+
+    if (existe == false) {
+        carrinho.push({
+            nome: produto.nome,
+            preco: produto.preco,
+            quantidade: 1
+        });
+    }
+
+    atualizarCarrinho();
+}
+
+function atualizarCarrinho() {
+
+    listaCarrinho.innerHTML = "";
+
+    let valorTotal = 0;
+
+    carrinho.forEach(function(item, index) {
+
+        let div = document.createElement("div");
+        div.classList.add("itemCarrinho");
+
+        let subtotal = item.preco * item.quantidade;
+
+        valorTotal += subtotal;
+
+        div.innerHTML = `
+            <h3>${item.nome}</h3>
+            <p>Quantidade: ${item.quantidade}</p>
+            <p>Total: R$ ${subtotal}</p>
+            <button>Remover</button>
+        `;
+
+        let botaoRemover = div.querySelector("button");
+
+        botaoRemover.addEventListener("click", function() {
+            removerCarrinho(index);
+        });
+
+        listaCarrinho.appendChild(div);
+    });
+
+    total.innerHTML = valorTotal;
+
+    salvarDados();
+}
+
+function removerCarrinho(index) {
+
+    if (carrinho[index].quantidade > 1) {
+        carrinho[index].quantidade--;
+    } else {
+        carrinho.splice(index, 1);
+    }
+
+    atualizarCarrinho();
+}
+
+function salvarDados() {
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+}
+
+function carregarDados() {
+
+    let dados = localStorage.getItem("carrinho");
+
+    if (dados) {
+        carrinho = JSON.parse(dados);
+        atualizarCarrinho();
+    }
+}
+
+function filtrarProdutos() {
+
+    let valorFiltro = filtro.value;
+    let novaLista = [];
+
+    switch(valorFiltro) {
+
+        case "todos":
+            novaLista = produtos;
+            break;
+
+        case "ate50":
+            novaLista = produtos.filter(function(produto) {
+                return produto.preco <= 50;
+            });
+            break;
+
+        case "acima50":
+            novaLista = produtos.filter(function(produto) {
+                return produto.preco > 50;
+            });
+            break;
+    }
+
+    mostrarProdutos(novaLista);
+}
+
+filtro.addEventListener("change", filtrarProdutos);
+
+document.addEventListener("DOMContentLoaded", function() {
+    mostrarProdutos(produtos);
+    carregarDados();
+});
+</script>
+
+</body>
+</html>
